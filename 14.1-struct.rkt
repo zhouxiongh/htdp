@@ -43,6 +43,41 @@
        [(and (empty? (child-father ftn)) (empty? (child-mother ftn))) 1]
        [else (+ 1 (count-persons (child-father ftn)) (count-persons (child-mother ftn)))])]))
 
-(count-persons empty)
-(count-persons Carl)
-(count-persons Gustav)
+;(count-persons empty)
+;(count-persons Carl)
+;(count-persons Gustav)
+
+;; count-ages : ftn number -> number
+;; compute family tree total age
+;; example
+;; (count-ages empty 2021) -> 0
+;; (count-ages Carl 2021) -> 95
+;; (count-ages Gustav 2021) -> 334
+(define (count-ages ftn n)
+  (cond
+    [(empty? ftn) 0]
+    [else (cond
+            [(and (empty? (child-father ftn)) (empty? (child-mother ftn))) (- n (child-date ftn))]
+            [(empty? (child-father ftn)) (+ (- n (child-date ftn)) (count-ages (child-mother ftn) 2021))]
+            [(empty? (child-mother ftn)) (+ (- n (child-date ftn)) (count-ages (child-father ftn) 2021))]
+            [else (+ (- n (child-date ftn)) (count-ages (child-father ftn) 2021) (count-ages (child-mother ftn) 2021))])]))
+;; tests
+;(count-ages empty 2021)
+;(count-ages Carl 2021)
+;(count-ages Gustav 2021)
+
+;; average-age : ftn, number -> number
+;; compute family tree average age
+;; example
+;; (average-age empty 2021) -> 0
+;; (average-age Carl 2021) -> 95
+;; (average-age Gustav 2021) -> 66.8
+(define (average-age ftn n)
+  (cond
+    [(zero? (count-persons ftn)) 0]
+    [else (/ (count-ages ftn n) (count-persons ftn))]))
+
+;; tests
+(average-age empty 2021)
+(average-age Carl 2021)
+(average-age Gustav 2021)
